@@ -1,0 +1,177 @@
+% ansible.tex
+\documentclass{beamer}
+\usetheme{Warsaw}
+\author{Aditya Patawari}
+\institute{
+  Contributor to Fedora Admin team\\[2ex]
+  Lead Engineer (Infrastructure) at BrowserStack.com\\[2ex]
+  \texttt{aditya@adityapatawari.com}\\
+  \texttt{adimania on freenode irc}\\
+  \texttt{http://blog.adityapatawari.com}
+}
+\title{Running your containers in a sane environment, Project Atomic}
+\usepackage{graphicx}
+\usepackage{ragged2e}
+\usepackage{fancyvrb}
+\usepackage[free-standing-units, space-before-unit, use-xspace]{siunitx}
+\begin{document}
+
+\begin{frame}
+  \titlepage
+  \end{frame}
+\begin{frame}{Topics}
+\begin{itemize}
+  \item What is the problem?
+  \item Project Atomic is here!
+  \item .. Along with some components
+  \item Starting our Atomic Host
+  \item Demo
+\end{itemize}
+\end{frame}
+
+\begin{frame}{What is the problem?}
+\begin{figure}[htp]
+\centering
+\includegraphics[scale=0.15]{problem.jpg}
+\label{}
+\end{figure}
+\begin{itemize}
+  \item We need a stable environment to run containers
+  \item We need to support automation
+  \item Managing hosts should involve minimal efforts
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Project Atomic is here!}
+\begin{figure}[htp]
+\centering
+\includegraphics[scale=0.25]{atomic_logo.png}
+\label{}
+\end{figure}
+\begin{verbatim}
+One Project to rule them all, 
+One Project to find them,
+One Project to bring them all ,
+and in the "containers" bind them
+\end{verbatim}
+\end{frame}
+
+\begin{frame}{Introducing Atomic Host!}
+\begin{figure}[htp]
+\centering
+\includegraphics[scale=0.45]{atom.jpg}
+\label{}
+\end{figure}
+\begin{itemize}
+  \item Minimal operating system
+  \item Benefits of our favorite Enterprise Linux
+  \item Robust atomic upgrades and systemd 
+  \item Ready to take on cloud, virtualized or bare metal
+\end{itemize}
+\end{frame}
+
+\begin{frame}{.. including rpm-ostree ..}
+\begin{figure}[htp]
+\centering
+\includegraphics[scale=0.70]{Rpm_logo.png}
+\label{}
+\end{figure}
+\begin{itemize}
+  \item Bootable, immutable, versioned filesystem trees
+  \item Composed from standard rpms
+  \item Atomic upgrade and rollbacks
+  \item Only /etc and /var are writable
+\end{itemize}
+\end{frame}
+
+\begin{frame}{.. and Systemd ..}
+\begin{figure}[htp]
+\centering
+\includegraphics[scale=0.45]{systemd.png}
+\label{}
+\end{figure}
+\begin{itemize}
+  \item System and service manager for Linux 
+  \item Replacing the init in Centos 7
+  \item Highly modular and much more powerful than sysV
+  \item Check out http://0pointer.de/blog/projects/why.html
+\end{itemize}
+\end{frame}
+
+\begin{frame}{.. also Introducing Cockpit..}
+\begin{figure}[htp]
+\centering
+\includegraphics[scale=0.28]{cockpit.png}
+\label{}
+\end{figure}
+\end{frame}
+
+\begin{frame}{.. and lastly Kubernetes ..}
+\begin{figure}[htp]
+\centering
+\includegraphics[scale=0.2]{kubernetes.png}
+\label{}
+\end{figure}
+\begin{itemize}
+  \item Master-slave arch
+  \item Boot new containers
+  \item Scalable and fault tolerant 
+  \item Lots of examples and setup instructions at https://github.com/GoogleCloudPlatform/kubernetes
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Starting Atomic Host}
+\begin{figure}[htp]
+\centering
+\includegraphics[scale=0.30]{boot.jpg}
+\label{}
+\end{figure}
+\begin{itemize}
+  \item Atomic host needs cloud-init data
+  \item Info about the host, i.e. meta-data
+  \item Info about the user, i.e. user-data
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{cloud-init data}
+\begin{verbatim}
+$ cat meta-data
+instance-id: iid-local01;
+local-hostname: myhost;
+
+$ cat user-data
+#cloud-config
+password: mypassword
+ssh_pwauth: True
+chpasswd: { expire: False }
+
+ssh_authorized_keys:
+  - ssh-rsa ... foo@foo.com
+
+$ genisoimage -output init.iso -volid cidata -joliet \
+ -rock user-data meta-data
+\end{verbatim}
+\end{frame}
+
+\begin{frame}{Demo!}
+\begin{figure}[htp]
+\centering
+\includegraphics[scale=0.40]{demo.jpg}
+\label{}
+\end{figure}
+\begin{itemize}
+  \item Start a container.
+  \item Verify that it works.
+  \item Kill the container.
+  \item OOOOO... Magic!
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Questions?}
+Now is your chance :)
+\end{frame}
+
+\end{document}

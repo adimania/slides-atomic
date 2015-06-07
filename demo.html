@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Some Title</title>
+	</head>
+	<body>
+		<img id='demo-img' src='http://192.168.122.138:8080/var/www/html/kubernetes.png' />
+		<script src="https://code.jquery.com/jquery-1.11.2.min.js"></script>
+
+		<script type="text/javascript">
+			$(document).ready(function() {
+				pollServer();
+			});
+		</script>
+
+		<script type="text/javascript">
+			function pollServer() {
+
+				var beacon = new Image(); 
+				beacon.onload = function() {
+				  $('#demo-img').attr('style', 'display:block');
+				};
+				beacon.onerror = function(){    
+				  $('#demo-img').attr('style', 'display:none');
+				}
+				var timer = window.setInterval(function(){
+			    beacon.src = "http://192.168.122.138:8080/var/www/html/kubernetes.png?" + (new Date()).getTime();
+				}, 1000);
+			}
+		</script>
+	</body>
+</html>

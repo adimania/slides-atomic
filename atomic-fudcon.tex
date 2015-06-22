@@ -6,7 +6,7 @@
   Contributor to Fedora Project and Project Atomic\\[2ex]
   \texttt{aditya@adityapatawari.com}\\
   \texttt{lmohanty@redhat.com}\\
-  \texttt{adimania on freenode irc}\\
+  \texttt{adimania, lalatenduM on freenode irc}\\
   \texttt{http://blog.adityapatawari.com}
 }
 \title{Running your containers in a sane environment, Project Atomic}
@@ -85,28 +85,83 @@
 \label{}
 \end{figure}
 \begin{itemize}
-  \item Minimal operating system
-  \item Benefits of our favorite Enterprise Linux
-  \item Robust atomic upgrades and systemd 
-  \item Ready to take on cloud, virtualized or bare metal
+  \item It is not a new GNU/Linux distribution
+  \item Framework to create an OS from RHEL, CentOS or Fedora
+  \item Aim of Project Atomic is to create a better OS for containers
 \end{itemize}
 \end{frame}
 
-\begin{frame}{.. including rpm-ostree ..}
+\begin{frame}{Why Project Atomic?}
+\begin{figure}[htp]
+\centering
+\includegraphics[scale=0.25]{atomic_logo.png}
+\label{}
+\end{figure}
+\begin{itemize}
+  \item Minimal operating system (Less packages to maintain)
+  \item Optimized operating system for containers
+  \item Benefits of our favorite Enterprise Linux
+  \item Robust atomic upgrades
+  \item More secure than traditional operating systems.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{What Atomic Hosts Won't Provide?}
+\begin{itemize}
+  \item Yum/dnf install/update will not work in Atomic host
+  \item Official CentOS/Fedora/RHEL images would have minimal package set
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Atomic hosts comprises of}
+\begin{itemize}
+  \item rpm-ostree
+  \item systemd
+  \item Cockpit
+  \item Kubernetes
+  \item /usr/bin/atomic
+  \item Docker
+  \item SPC
+\end{itemize}
+\end{frame}
+
+\begin{frame}{rpm-ostree}
 \begin{figure}[htp]
 \centering
 \includegraphics[scale=0.70]{Rpm_logo.png}
 \label{}
 \end{figure}
 \begin{itemize}
-  \item Bootable, immutable, versioned filesystem trees
-  \item Composed from standard rpms
+  \item Git for operating systems
   \item Atomic upgrade and rollbacks
-  \item Only /etc and /var are writable
+  \item Derived from GNOME OSTree project.
+  \item Bootable, immutable, versioned filesystem trees
 \end{itemize}
 \end{frame}
 
-\begin{frame}{.. and Systemd ..}
+\begin{frame}{Why rpm-ostree?}
+\begin{figure}[htp]
+\centering
+\includegraphics[scale=0.25]{ostree.jpg}
+\label{}
+\end{figure}
+\begin{itemize}
+  \item Composed from standard rpms
+  \item No need to re-invent the wheel on packaging
+  \item No more half way upgraded systems
+  \item Option to rollback to previous state (old good state).
+\end{itemize}
+\end{frame}
+
+\begin{frame}{How rpm-ostree works?}
+\begin{itemize}
+  \item Only /etc and /var are writable
+  \item All data (e.g. containers) are unchanged on upgrade
+  \item /etc gets updated through a 3-way merge
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Systemd}
 \begin{figure}[htp]
 \centering
 \includegraphics[scale=0.45]{systemd.png}
@@ -120,7 +175,7 @@
 \end{itemize}
 \end{frame}
 
-\begin{frame}{.. also Introducing Cockpit..}
+\begin{frame}{..Introducing Cockpit..}
 \begin{figure}[htp]
 \centering
 \includegraphics[scale=0.28]{cockpit.png}
@@ -128,7 +183,7 @@
 \end{figure}
 \end{frame}
 
-\begin{frame}{.. and lastly Kubernetes ..}
+\begin{frame}{..Kubernetes ..}
 \begin{figure}[htp]
 \centering
 \includegraphics[scale=0.2]{kubernetes.png}
@@ -136,44 +191,56 @@
 \end{figure}
 \begin{itemize}
   \item Master-slave arch
-  \item Boot new containers
-  \item Scalable and fault tolerant 
+  \item For managing containerized applications across multiple hosts
+  \item It gives basic mechanisms for deployment, maintenance, and scaling of applications.
   \item Lots of examples and setup instructions at https://github.com/GoogleCloudPlatform/kubernetes
 \end{itemize}
 \end{frame}
 
-\begin{frame}{Starting Atomic Host}
-\begin{figure}[htp]
-\centering
-\includegraphics[scale=0.30]{boot.jpg}
-\label{}
-\end{figure}
+\begin{frame}{/usr/bin/atomic}
 \begin{itemize}
-  \item Atomic host needs cloud-init data
-  \item Info about the host, i.e. meta-data
-  \item Info about the user, i.e. user-data
+  \item Coherent entry point : manage host and containers with the atomic command
+  \item Fill gaps in Linux container implementations.
+  \item “atomic install foo” can install a container with its k8s configuration and/or systemd unit file
+  \item “atomic run” grabs the LABEL “run” with its all command line details.
+  \item It can use/serve the metadata for containers for different use cases
 \end{itemize}
 \end{frame}
 
-\begin{frame}[fragile]
-\frametitle{cloud-init data}
-\begin{verbatim}
-$ cat meta-data
-instance-id: iid-local01;
-local-hostname: myhost;
+\begin{frame}{SPC}
+\begin{itemize}
+  \item SPC = Super Privileged Containers
+  \item Debugging tools, monitoring tools etc as container images
+  \item Runs with --privileged option
+\end{itemize}
+\end{frame}
 
-$ cat user-data
-#cloud-config
-password: mypassword
-ssh_pwauth: True
-chpasswd: { expire: False }
+\begin{frame}{Projects For Multi-container Applications}
+\begin{itemize}
+  \item Nulecule  - https://github.com/projectatomic/nulecule
+  \item Atomicapp - https://github.com/projectatomic/atomicapp
+\end{itemize}
+\end{frame}
 
-ssh_authorized_keys:
-  - ssh-rsa ... foo@foo.com
+\begin{frame}{Introducing Nulecule}
+\begin{figure}[htp]
+\centering
+\includegraphics[scale=0.25]{nulecule.png}
+\label{}
+\end{figure}
+\begin{itemize}
+  \item Composite Container-based Application Specification
+  \item Provide a simple, flexible way to describe a multi-container application, including all dependencies
+  \item Package once. Run anywhere*
+\end{itemize}
+\end{frame}
 
-$ genisoimage -output init.iso -volid cidata -joliet \
- -rock user-data meta-data
-\end{verbatim}
+\begin{frame}{.. And Atomicapp}
+\begin{itemize}
+  \item Atomicapp is a reference implementation of the Nulecule Specification
+  \item It can be used to bootstrap container applications and to install and run them
+  \item Atomicapp is designed to be run in a container context
+\end{itemize}
 \end{frame}
 
 \begin{frame}{Demo!}
